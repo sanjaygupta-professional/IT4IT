@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Algorithm Visualizers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: white;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .algorithms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .algorithm-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .algorithm-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--card-color);
+        }
+
+        .algorithm-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--card-color);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .algorithm-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .algorithm-card .category {
+            display: inline-block;
+            padding: 6px 15px;
+            background: var(--card-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .algorithm-card p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1.05em;
+        }
+
+        .key-features {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid var(--card-color);
+        }
+
+        .key-features h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .key-features ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-features li {
+            padding: 5px 0;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .key-features li::before {
+            content: '✓ ';
+            color: var(--card-color);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .view-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--card-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .view-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Color schemes for different algorithm types */
+        .ensemble { --card-color: #667eea; }
+        .clustering { --card-color: #f093fb; }
+        .forest { --card-color: #2ecc71; }
+        .application { --card-color: #3498db; }
+        .prediction { --card-color: #e74c3c; }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .footer p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+
+            .algorithms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>🎯 Machine Learning Visualizers</h1>
+        <p>Interactive visualizations to understand and explore fundamental machine learning algorithms. Watch algorithms learn in real-time with step-by-step animations.</p>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">📚 Available Algorithms</h2>
+
+        <div class="algorithms-grid">
+            <!-- AdaBoost Card -->
+            <div class="algorithm-card ensemble" onclick="window.location.href='adaboost_visualizer.html'">
+                <div class="card-icon">🚀</div>
+                <span class="category">Ensemble Learning</span>
+                <h3>AdaBoost Visualizer</h3>
+                <p>Adaptive Boosting combines multiple weak learners to create a strong classifier. Watch how it adaptively adjusts weights based on misclassified examples.</p>
+                <div class="key-features">
+                    <h4>Key Features:</h4>
+                    <ul>
+                        <li>Iterative weight adjustment visualization</li>
+                        <li>Weak learner combination process</li>
+                        <li>Real-time accuracy tracking</li>
+                        <li>Interactive parameter controls</li>
+                    </ul>
+                </div>
+                <a href="adaboost_visualizer.html" class="view-button" onclick="event.stopPropagation()">Launch Visualizer →</a>
+            </div>
+
+            <!-- Random Forest Card -->
+            <div class="algorithm-card forest" onclick="window.location.href='random_forest_visualizer.html'">
+                <div class="card-icon">🌲</div>
+                <span class="category">Ensemble Learning</span>
+                <h3>Random Forest Visualizer</h3>
+                <p>See how multiple decision trees work together to make predictions. Visualize the forest-building process, bootstrap sampling, and voting mechanism.</p>
+                <div class="key-features">
+                    <h4>Key Features:</h4>
+                    <ul>
+                        <li>Multiple decision tree visualization</li>
+                        <li>Bootstrap sampling animation</li>
+                        <li>Majority voting demonstration</li>
+                        <li>Feature importance display</li>
+                    </ul>
+                </div>
+                <a href="random_forest_visualizer.html" class="view-button" onclick="event.stopPropagation()">Launch Visualizer →</a>
+            </div>
+
+            <!-- Clustering Card -->
+            <div class="algorithm-card clustering" onclick="window.location.href='clustering_visualizer.html'">
+                <div class="card-icon">🎨</div>
+                <span class="category">Unsupervised Learning</span>
+                <h3>Clustering Visualizer</h3>
+                <p>Explore K-Means and DBSCAN clustering algorithms. Watch centroids move and clusters form as the algorithms iterate through the data points.</p>
+                <div class="key-features">
+                    <h4>Key Features:</h4>
+                    <ul>
+                        <li>K-Means centroid movement animation</li>
+                        <li>DBSCAN density-based clustering</li>
+                        <li>Dynamic cluster formation</li>
+                        <li>Customizable cluster count</li>
+                    </ul>
+                </div>
+                <a href="clustering_visualizer.html" class="view-button" onclick="event.stopPropagation()">Launch Visualizer →</a>
+            </div>
+
+            <!-- USA Cities Clustering Card -->
+            <div class="algorithm-card application" onclick="window.location.href='usa_cities_clustering.html'">
+                <div class="card-icon">🗺️</div>
+                <span class="category">Real-World Application</span>
+                <h3>USA Cities Clustering</h3>
+                <p>Apply clustering algorithms to real geographical data. Visualize how major US cities group together based on their spatial coordinates.</p>
+                <div class="key-features">
+                    <h4>Key Features:</h4>
+                    <ul>
+                        <li>Real US city dataset visualization</li>
+                        <li>Geographic clustering patterns</li>
+                        <li>Interactive map-based display</li>
+                        <li>Regional grouping analysis</li>
+                    </ul>
+                </div>
+                <a href="usa_cities_clustering.html" class="view-button" onclick="event.stopPropagation()">Launch Visualizer →</a>
+            </div>
+
+            <!-- Weather Visualizer Card -->
+            <div class="algorithm-card prediction" onclick="window.location.href='weather_visualizer.html'">
+                <div class="card-icon">🌤️</div>
+                <span class="category">Predictive Analytics</span>
+                <h3>Weather Pattern Visualizer</h3>
+                <p>Analyze weather data patterns using machine learning. Explore temperature, precipitation, and seasonal trends with interactive visualizations.</p>
+                <div class="key-features">
+                    <h4>Key Features:</h4>
+                    <ul>
+                        <li>Time series pattern analysis</li>
+                        <li>Multi-variable weather data</li>
+                        <li>Seasonal trend detection</li>
+                        <li>Interactive data exploration</li>
+                    </ul>
+                </div>
+                <a href="weather_visualizer.html" class="view-button" onclick="event.stopPropagation()">Launch Visualizer →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>💡 Built with passion for learning and teaching Machine Learning</p>
+        <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">Click any card to explore the interactive visualization</p>
+    </div>
+
+    <script>
+        // Add staggered animation delays to cards
+        document.querySelectorAll('.algorithm-card').forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    </script>
+</body>
+</html>
