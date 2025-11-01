@@ -183,7 +183,7 @@
         .clustering { --card-color: #f093fb; }
         .forest { --card-color: #2ecc71; }
         .application { --card-color: #3498db; }
-        .prediction { --card-color: #e74c3c; }
+        .evaluation { --card-color: #2193b0; }
 
         .footer {
             text-align: center;
@@ -281,15 +281,15 @@
             <div class="algorithm-card clustering" onclick="window.location.href='clustering_visualizer.html'">
                 <div class="card-icon">🎨</div>
                 <span class="category">Unsupervised Learning</span>
-                <h3>Clustering Visualizer</h3>
-                <p>Explore K-Means and DBSCAN clustering algorithms. Watch centroids move and clusters form as the algorithms iterate through the data points.</p>
+                <h3>K-Means Clustering Visualizer</h3>
+                <p>Watch the K-Means algorithm in action! See animated centroid movements and cluster formation as the algorithm iteratively optimizes cluster assignments through the data points.</p>
                 <div class="key-features">
                     <h4>Key Features:</h4>
                     <ul>
-                        <li>K-Means centroid movement animation</li>
-                        <li>DBSCAN density-based clustering</li>
-                        <li>Dynamic cluster formation</li>
-                        <li>Customizable cluster count</li>
+                        <li>Animated K-Means centroid movements</li>
+                        <li>Step-by-step cluster convergence</li>
+                        <li>Real-time iteration tracking</li>
+                        <li>Customizable cluster count and data</li>
                     </ul>
                 </div>
                 <a href="clustering_visualizer.html" class="view-button" onclick="event.stopPropagation()">Launch Visualizer →</a>
@@ -313,22 +313,22 @@
                 <a href="usa_cities_clustering.html" class="view-button" onclick="event.stopPropagation()">Launch Visualizer →</a>
             </div>
 
-            <!-- Weather Visualizer Card -->
-            <div class="algorithm-card prediction" onclick="window.location.href='weather_visualizer.html'">
-                <div class="card-icon">🌤️</div>
-                <span class="category">Predictive Analytics</span>
-                <h3>Weather Pattern Visualizer</h3>
-                <p>Analyze weather data patterns using machine learning. Explore temperature, precipitation, and seasonal trends with interactive visualizations.</p>
+            <!-- Silhouette Coefficient Card -->
+            <div class="algorithm-card evaluation" onclick="window.location.href='silhouette_visualizer.html'">
+                <div class="card-icon">📊</div>
+                <span class="category">Clustering Evaluation</span>
+                <h3>Silhouette Coefficient Visualizer</h3>
+                <p>Evaluate clustering quality with the Silhouette Coefficient metric. Visualize how well each data point fits within its assigned cluster compared to neighboring clusters.</p>
                 <div class="key-features">
                     <h4>Key Features:</h4>
                     <ul>
-                        <li>Time series pattern analysis</li>
-                        <li>Multi-variable weather data</li>
-                        <li>Seasonal trend detection</li>
-                        <li>Interactive data exploration</li>
+                        <li>Animated silhouette score calculation</li>
+                        <li>Per-cluster quality visualization</li>
+                        <li>Interactive silhouette plot display</li>
+                        <li>Optimal cluster number detection</li>
                     </ul>
                 </div>
-                <a href="weather_visualizer.html" class="view-button" onclick="event.stopPropagation()">Launch Visualizer →</a>
+                <a href="silhouette_visualizer.html" class="view-button" onclick="event.stopPropagation()">Launch Visualizer →</a>
             </div>
         </div>
     </div>
