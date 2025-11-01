@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clustering Algorithm Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            height: fit-content;
+        }
+
+        .control-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+        }
+
+        .control-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        select, input[type="number"], input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input[type="range"] {
+            padding: 0;
+        }
+
+        .range-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        canvas {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+            background: white;
+            cursor: crosshair;
+        }
+
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-panel h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .info-panel p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+
+        .status {
+            padding: 10px;
+            background: #e7f3ff;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #0066cc;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Clustering Algorithm Visualizer</h1>
+            <p class="subtitle">Interactive K-Means & Agglomerative Clustering</p>
+        </header>
+
+        <div class="main-content">
+            <div class="controls">
+                <div class="control-section">
+                    <h3>Algorithm</h3>
+                    <div class="control-group">
+                        <label for="algorithm">Select Algorithm:</label>
+                        <select id="algorithm">
+                            <option value="kmeans">K-Means Clustering</option>
+                            <option value="agglomerative">Agglomerative Clustering</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Data Generation</h3>
+                    <div class="control-group">
+                        <label for="dataPattern">Data Pattern:</label>
+                        <select id="dataPattern">
+                            <option value="random">Random</option>
+                            <option value="clusters">Clustered</option>
+                            <option value="circular">Circular</option>
+                            <option value="grid">Grid</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="numPoints">Number of Points: <span id="numPointsValue" class="range-value">100</span></label>
+                        <input type="range" id="numPoints" min="20" max="300" value="100" step="10">
+                    </div>
+                    <button class="btn-secondary" id="generateBtn">Generate New Data</button>
+                </div>
+
+                <div class="control-section">
+                    <h3>Clustering Parameters</h3>
+                    <div class="control-group">
+                        <label for="numClusters">Number of Clusters: <span id="numClustersValue" class="range-value">3</span></label>
+                        <input type="range" id="numClusters" min="2" max="8" value="3">
+                    </div>
+                    <div class="control-group">
+                        <label for="animationSpeed">Animation Speed: <span id="animationSpeedValue" class="range-value">500ms</span></label>
+                        <input type="range" id="animationSpeed" min="100" max="2000" value="500" step="100">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Controls</h3>
+                    <button class="btn-primary" id="startBtn">Start Animation</button>
+                    <button class="btn-warning" id="stepBtn">Step Forward</button>
+                    <button class="btn-secondary" id="resetBtn">Reset</button>
+                    <button class="btn-secondary" id="clearBtn">Clear Canvas</button>
+                </div>
+
+                <div class="status" id="status">Ready to start</div>
+            </div>
+
+            <div class="visualization">
+                <canvas id="canvas" width="800" height="600"></canvas>
+
+                <div class="legend" id="legend"></div>
+
+                <div class="info-panel">
+                    <h4>Algorithm Information</h4>
+                    <div id="algorithmInfo"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const statusEl = document.getElementById('status');
+        const algorithmInfoEl = document.getElementById('algorithmInfo');
+        const legendEl = document.getElementById('legend');
+
+        // Color palette for clusters
+        const colors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
+            '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'
+        ];
+
+        // State
+        let points = [];
+        let centroids = [];
+        let clusters = [];
+        let animationId = null;
+        let currentStep = 0;
+        let isAnimating = false;
+        let algorithm = 'kmeans';
+        let numClusters = 3;
+        let animationSpeed = 500;
+
+        // K-means specific
+        let kmeansAssignments = [];
+        let kmeansConverged = false;
+
+        // Agglomerative specific
+        let agglomerativeClusters = [];
+        let agglomerativeSteps = [];
+        let agglomerativeStep = 0;
+
+        // Initialize
+        init();
+
+        function init() {
+            generateData();
+            updateInfo();
+            updateLegend();
+            draw();
+        }
+
+        // Event Listeners
+        document.getElementById('algorithm').addEventListener('change', (e) => {
+            algorithm = e.target.value;
+            reset();
+        });
+
+        document.getElementById('dataPattern').addEventListener('change', () => {
+            generateData();
+        });
+
+        document.getElementById('numPoints').addEventListener('input', (e) => {
+            document.getElementById('numPointsValue').textContent = e.target.value;
+        });
+
+        document.getElementById('numClusters').addEventListener('input', (e) => {
+            numClusters = parseInt(e.target.value);
+            document.getElementById('numClustersValue').textContent = e.target.value;
+            updateLegend();
+        });
+
+        document.getElementById('animationSpeed').addEventListener('input', (e) => {
+            animationSpeed = parseInt(e.target.value);
+            document.getElementById('animationSpeedValue').textContent = e.target.value + 'ms';
+        });
+
+        document.getElementById('generateBtn').addEventListener('click', generateData);
+        document.getElementById('startBtn').addEventListener('click', startAnimation);
+        document.getElementById('stepBtn').addEventListener('click', step);
+        document.getElementById('resetBtn').addEventListener('click', reset);
+        document.getElementById('clearBtn').addEventListener('click', clearCanvas);
+
+        // Allow clicking on canvas to add points
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            points.push({ x, y });
+            draw();
+        });
+
+        function generateData() {
+            const numPoints = parseInt(document.getElementById('numPoints').value);
+            const pattern = document.getElementById('dataPattern').value;
+            points = [];
+
+            switch(pattern) {
+                case 'random':
+                    for (let i = 0; i < numPoints; i++) {
+                        points.push({
+                            x: Math.random() * (canvas.width - 40) + 20,
+                            y: Math.random() * (canvas.height - 40) + 20
+                        });
+                    }
+                    break;
+
+                case 'clusters':
+                    const numGroups = 3;
+                    const centers = [];
+                    for (let i = 0; i < numGroups; i++) {
+                        centers.push({
+                            x: Math.random() * (canvas.width - 200) + 100,
+                            y: Math.random() * (canvas.height - 200) + 100
+                        });
+                    }
+                    for (let i = 0; i < numPoints; i++) {
+                        const center = centers[Math.floor(Math.random() * numGroups)];
+                        points.push({
+                            x: center.x + (Math.random() - 0.5) * 150,
+                            y: center.y + (Math.random() - 0.5) * 150
+                        });
+                    }
+                    break;
+
+                case 'circular':
+                    const centerX = canvas.width / 2;
+                    const centerY = canvas.height / 2;
+                    const radius = Math.min(canvas.width, canvas.height) / 3;
+                    for (let i = 0; i < numPoints; i++) {
+                        const angle = (i / numPoints) * 2 * Math.PI;
+                        const r = radius + (Math.random() - 0.5) * 50;
+                        points.push({
+                            x: centerX + Math.cos(angle) * r,
+                            y: centerY + Math.sin(angle) * r
+                        });
+                    }
+                    break;
+
+                case 'grid':
+                    const gridSize = Math.ceil(Math.sqrt(numPoints));
+                    const spacing = Math.min(canvas.width, canvas.height) / (gridSize + 1);
+                    for (let i = 0; i < numPoints; i++) {
+                        const row = Math.floor(i / gridSize);
+                        const col = i % gridSize;
+                        points.push({
+                            x: (col + 1) * spacing + (Math.random() - 0.5) * 20,
+                            y: (row + 1) * spacing + (Math.random() - 0.5) * 20
+                        });
+                    }
+                    break;
+            }
+
+            reset();
+        }
+
+        function clearCanvas() {
+            points = [];
+            reset();
+        }
+
+        function reset() {
+            if (animationId) {
+                clearTimeout(animationId);
+                animationId = null;
+            }
+            isAnimating = false;
+            currentStep = 0;
+            centroids = [];
+            kmeansAssignments = [];
+            kmeansConverged = false;
+            agglomerativeClusters = [];
+            agglomerativeSteps = [];
+            agglomerativeStep = 0;
+
+            updateStatus('Reset. Ready to start.');
+            updateInfo();
+            draw();
+        }
+
+        function startAnimation() {
+            if (points.length === 0) {
+                updateStatus('Please generate data first!');
+                return;
+            }
+
+            if (isAnimating) {
+                isAnimating = false;
+                if (animationId) clearTimeout(animationId);
+                updateStatus('Animation paused');
+                return;
+            }
+
+            if (currentStep === 0) {
+                initialize();
+            }
+
+            isAnimating = true;
+            animate();
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+
+            const continueAnimation = step();
+
+            if (continueAnimation && isAnimating) {
+                animationId = setTimeout(animate, animationSpeed);
+            } else {
+                isAnimating = false;
+                updateStatus('Animation complete!');
+            }
+        }
+
+        function step() {
+            if (points.length === 0) {
+                updateStatus('Please generate data first!');
+                return false;
+            }
+
+            if (currentStep === 0) {
+                initialize();
+            }
+
+            if (algorithm === 'kmeans') {
+                return stepKMeans();
+            } else {
+                return stepAgglomerative();
+            }
+        }
+
+        function initialize() {
+            currentStep = 1;
+
+            if (algorithm === 'kmeans') {
+                initializeKMeans();
+            } else {
+                initializeAgglomerative();
+            }
+        }
+
+        // ===== K-MEANS ALGORITHM =====
+        function initializeKMeans() {
+            // Randomly select initial centroids
+            centroids = [];
+            const usedIndices = new Set();
+
+            while (centroids.length < numClusters) {
+                const idx = Math.floor(Math.random() * points.length);
+                if (!usedIndices.has(idx)) {
+                    centroids.push({ ...points[idx] });
+                    usedIndices.add(idx);
+                }
+            }
+
+            kmeansAssignments = new Array(points.length).fill(-1);
+            kmeansConverged = false;
+
+            updateStatus('K-Means: Initialized centroids');
+            updateInfo();
+            draw();
+        }
+
+        function stepKMeans() {
+            if (kmeansConverged) {
+                return false;
+            }
+
+            if (currentStep % 2 === 1) {
+                // Assignment step
+                const oldAssignments = [...kmeansAssignments];
+
+                for (let i = 0; i < points.length; i++) {
+                    let minDist = Infinity;
+                    let closestCluster = 0;
+
+                    for (let j = 0; j < centroids.length; j++) {
+                        const dist = distance(points[i], centroids[j]);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            closestCluster = j;
+                        }
+                    }
+
+                    kmeansAssignments[i] = closestCluster;
+                }
+
+                // Check convergence
+                kmeansConverged = oldAssignments.every((val, idx) => val === kmeansAssignments[idx]);
+
+                updateStatus(`K-Means: Assigned points to nearest centroids (Iteration ${Math.floor(currentStep / 2) + 1})`);
+            } else {
+                // Update centroids step
+                const newCentroids = [];
+
+                for (let i = 0; i < numClusters; i++) {
+                    const clusterPoints = points.filter((_, idx) => kmeansAssignments[idx] === i);
+
+                    if (clusterPoints.length > 0) {
+                        const sumX = clusterPoints.reduce((sum, p) => sum + p.x, 0);
+                        const sumY = clusterPoints.reduce((sum, p) => sum + p.y, 0);
+                        newCentroids.push({
+                            x: sumX / clusterPoints.length,
+                            y: sumY / clusterPoints.length
+                        });
+                    } else {
+                        newCentroids.push({ ...centroids[i] });
+                    }
+                }
+
+                centroids = newCentroids;
+                updateStatus(`K-Means: Updated centroids to cluster means`);
+            }
+
+            currentStep++;
+            updateInfo();
+            draw();
+
+            return !kmeansConverged;
+        }
+
+        // ===== AGGLOMERATIVE CLUSTERING =====
+        function initializeAgglomerative() {
+            // Each point starts as its own cluster
+            agglomerativeClusters = points.map((p, idx) => ({
+                points: [idx],
+                centroid: { ...p }
+            }));
+
+            agglomerativeSteps = [];
+            agglomerativeStep = 0;
+
+            // Precompute all merge steps
+            while (agglomerativeClusters.length > numClusters) {
+                // Find two closest clusters
+                let minDist = Infinity;
+                let mergeI = 0, mergeJ = 1;
+
+                for (let i = 0; i < agglomerativeClusters.length; i++) {
+                    for (let j = i + 1; j < agglomerativeClusters.length; j++) {
+                        const dist = distance(
+                            agglomerativeClusters[i].centroid,
+                            agglomerativeClusters[j].centroid
+                        );
+                        if (dist < minDist) {
+                            minDist = dist;
+                            mergeI = i;
+                            mergeJ = j;
+                        }
+                    }
+                }
+
+                // Record this merge step
+                agglomerativeSteps.push({
+                    mergeI,
+                    mergeJ,
+                    clusters: JSON.parse(JSON.stringify(agglomerativeClusters))
+                });
+
+                // Merge clusters
+                const merged = {
+                    points: [...agglomerativeClusters[mergeI].points, ...agglomerativeClusters[mergeJ].points],
+                    centroid: {
+                        x: (agglomerativeClusters[mergeI].centroid.x + agglomerativeClusters[mergeJ].centroid.x) / 2,
+                        y: (agglomerativeClusters[mergeI].centroid.y + agglomerativeClusters[mergeJ].centroid.y) / 2
+                    }
+                };
+
+                agglomerativeClusters.splice(mergeJ, 1);
+                agglomerativeClusters.splice(mergeI, 1);
+                agglomerativeClusters.push(merged);
+            }
+
+            // Reset to initial state
+            agglomerativeClusters = points.map((p, idx) => ({
+                points: [idx],
+                centroid: { ...p }
+            }));
+
+            updateStatus(`Agglomerative: Started with ${points.length} clusters`);
+            updateInfo();
+            draw();
+        }
+
+        function stepAgglomerative() {
+            if (agglomerativeStep >= agglomerativeSteps.length) {
+                return false;
+            }
+
+            const step = agglomerativeSteps[agglomerativeStep];
+            agglomerativeClusters = JSON.parse(JSON.stringify(step.clusters));
+
+            // Perform merge
+            const merged = {
+                points: [...agglomerativeClusters[step.mergeI].points, ...agglomerativeClusters[step.mergeJ].points],
+                centroid: {
+                    x: (agglomerativeClusters[step.mergeI].centroid.x + agglomerativeClusters[step.mergeJ].centroid.x) / 2,
+                    y: (agglomerativeClusters[step.mergeI].centroid.y + agglomerativeClusters[step.mergeJ].centroid.y) / 2
+                }
+            };
+
+            agglomerativeClusters.splice(step.mergeJ, 1);
+            agglomerativeClusters.splice(step.mergeI, 1);
+            agglomerativeClusters.push(merged);
+
+            agglomerativeStep++;
+            currentStep++;
+
+            updateStatus(`Agglomerative: Merged 2 clusters (${agglomerativeClusters.length} clusters remaining)`);
+            updateInfo();
+            draw();
+
+            return agglomerativeStep < agglomerativeSteps.length;
+        }
+
+        // ===== DRAWING =====
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (algorithm === 'kmeans') {
+                drawKMeans();
+            } else {
+                drawAgglomerative();
+            }
+        }
+
+        function drawKMeans() {
+            // Draw points
+            points.forEach((point, idx) => {
+                const cluster = kmeansAssignments[idx];
+                ctx.fillStyle = cluster >= 0 ? colors[cluster % colors.length] : '#999';
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+
+            // Draw centroids
+            centroids.forEach((centroid, idx) => {
+                ctx.fillStyle = colors[idx % colors.length];
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 3;
+
+                // Draw as larger circle with cross
+                ctx.beginPath();
+                ctx.arc(centroid.x, centroid.y, 10, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Draw cross
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(centroid.x - 8, centroid.y);
+                ctx.lineTo(centroid.x + 8, centroid.y);
+                ctx.moveTo(centroid.x, centroid.y - 8);
+                ctx.lineTo(centroid.x, centroid.y + 8);
+                ctx.stroke();
+            });
+        }
+
+        function drawAgglomerative() {
+            // Draw connections between points in same cluster
+            agglomerativeClusters.forEach((cluster, clusterIdx) => {
+                const color = colors[clusterIdx % colors.length];
+
+                // Draw lines connecting points in cluster
+                if (cluster.points.length > 1) {
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 1;
+                    ctx.globalAlpha = 0.3;
+
+                    for (let i = 0; i < cluster.points.length; i++) {
+                        for (let j = i + 1; j < cluster.points.length; j++) {
+                            const p1 = points[cluster.points[i]];
+                            const p2 = points[cluster.points[j]];
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                    ctx.globalAlpha = 1;
+                }
+
+                // Draw points
+                cluster.points.forEach(pointIdx => {
+                    const point = points[pointIdx];
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                });
+
+                // Draw cluster centroid if cluster has multiple points
+                if (cluster.points.length > 1) {
+                    ctx.fillStyle = color;
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(cluster.centroid.x, cluster.centroid.y, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            });
+        }
+
+        // ===== UTILITIES =====
+        function distance(p1, p2) {
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function updateStatus(message) {
+            statusEl.textContent = message;
+        }
+
+        function updateInfo() {
+            let info = '';
+
+            if (algorithm === 'kmeans') {
+                info = `
+                    <p><strong>K-Means Clustering</strong></p>
+                    <p>Algorithm alternates between two steps:</p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Assignment:</strong> Assign each point to nearest centroid</li>
+                        <li><strong>Update:</strong> Move centroids to mean of assigned points</li>
+                    </ol>
+                    <p style="margin-top: 10px;">Repeats until centroids stop moving (convergence)</p>
+                    ${currentStep > 0 ? `<p style="margin-top: 10px;"><strong>Current iteration:</strong> ${Math.floor(currentStep / 2) + 1}</p>` : ''}
+                    ${kmeansConverged ? '<p style="margin-top: 10px; color: green;"><strong>Converged!</strong></p>' : ''}
+                `;
+            } else {
+                info = `
+                    <p><strong>Agglomerative Clustering</strong></p>
+                    <p>Bottom-up hierarchical clustering:</p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>Start with each point as separate cluster</li>
+                        <li>Find two closest clusters</li>
+                        <li>Merge them into one cluster</li>
+                        <li>Repeat until desired number of clusters</li>
+                    </ol>
+                    ${currentStep > 0 ? `<p style="margin-top: 10px;"><strong>Clusters:</strong> ${agglomerativeClusters.length}</p>` : ''}
+                `;
+            }
+
+            algorithmInfoEl.innerHTML = info;
+        }
+
+        function updateLegend() {
+            legendEl.innerHTML = '';
+
+            for (let i = 0; i < numClusters; i++) {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+
+                const colorBox = document.createElement('div');
+                colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = colors[i % colors.length];
+
+                const label = document.createElement('span');
+                label.textContent = `Cluster ${i + 1}`;
+
+                item.appendChild(colorBox);
+                item.appendChild(label);
+                legendEl.appendChild(item);
+            }
+        }
+    </script>
+</body>
+</html>
