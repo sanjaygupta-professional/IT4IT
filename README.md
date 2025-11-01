@@ -1,8 +1,64 @@
-# Bouncing Balls Animation
+# IT4IT Visualizations
 
-A dynamic and interactive animation of colorful balls bouncing within a window, created with Pygame. The animation features realistic physics including gravity, elastic collisions, and energy damping.
+A collection of interactive visualizations and animations for educational purposes, including physics simulations, clustering algorithms, and machine learning quality metrics.
 
-## Features
+## Available Visualizations
+
+### 1. Silhouette Coefficient Visualizer
+**File:** `silhouette_visualizer.html`
+
+An interactive visualization demonstrating the silhouette coefficient metric for evaluating clustering quality.
+
+**Features:**
+- Real-time K-means clustering with adjustable parameters
+- Silhouette coefficient calculation and visualization for each data point
+- Dual-canvas display: cluster visualization + silhouette plot
+- Multiple data patterns (well-separated, overlapping, random, circular, elongated)
+- Animated K-value testing to find optimal number of clusters
+- Color-coded quality metrics (excellent, good, fair, poor)
+- Educational information about silhouette coefficient formula
+
+**How to use:**
+Simply open `silhouette_visualizer.html` in a web browser. No installation required!
+
+**What you'll learn:**
+- How silhouette coefficient measures clustering quality
+- The relationship between number of clusters (k) and quality metrics
+- How different data patterns affect clustering performance
+- How to interpret silhouette plots
+
+### 2. USA Cities Clustering
+**File:** `usa_cities_clustering.html`
+
+Animated hierarchical clustering visualization of major USA cities based on geographic coordinates.
+
+**Features:**
+- Interactive geographic clustering
+- Step-by-step hierarchical clustering animation
+- Real city data from major US metropolitan areas
+
+### 3. Clustering Algorithm Visualizer
+**File:** `clustering_visualizer.html`
+
+Interactive comparison of K-Means and Agglomerative clustering algorithms.
+
+**Features:**
+- Side-by-side algorithm comparison
+- Multiple data generation patterns
+- Step-by-step animation of clustering process
+- Customizable parameters
+
+### 4. Weather Visualizer
+**File:** `weather_visualizer.html`
+
+Animated weather data visualization tool.
+
+### 5. Bouncing Balls Animation
+**File:** `bouncing_balls.py`
+
+A dynamic Python/Pygame animation featuring realistic physics simulation.
+
+## Bouncing Balls Animation - Detailed Features
 
 - **Realistic Physics**: Gravity, velocity, and collision detection between balls and walls
 - **Ball-to-Ball Collisions**: Balls interact with each other using elastic collision physics
