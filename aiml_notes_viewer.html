@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI/ML Learning Notes - Nov 2025</title>
+
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Mermaid for diagram rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            background: white;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        #markdown-content {
+            line-height: 1.8;
+            color: #333;
+        }
+
+        #markdown-content h1,
+        #markdown-content h2,
+        #markdown-content h3,
+        #markdown-content h4 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        #markdown-content h1 {
+            font-size: 2.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        #markdown-content h2 {
+            font-size: 2em;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 8px;
+        }
+
+        #markdown-content h3 {
+            font-size: 1.6em;
+            color: #667eea;
+        }
+
+        #markdown-content h4 {
+            font-size: 1.3em;
+            color: #764ba2;
+        }
+
+        #markdown-content p {
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+
+        #markdown-content ul,
+        #markdown-content ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        #markdown-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        #markdown-content code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+
+        #markdown-content pre {
+            background: #282c34;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        #markdown-content pre code {
+            background: none;
+            color: #abb2bf;
+            padding: 0;
+        }
+
+        #markdown-content blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            font-style: italic;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 4px;
+        }
+
+        #markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        #markdown-content table th,
+        #markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        #markdown-content table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        #markdown-content table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        #markdown-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #markdown-content hr {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 40px 0;
+        }
+
+        /* Mermaid diagram styling */
+        .mermaid {
+            text-align: center;
+            margin: 30px 0;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-container {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            #markdown-content h1 {
+                font-size: 2em;
+            }
+
+            #markdown-content h2 {
+                font-size: 1.6em;
+            }
+        }
+
+        /* Table of Contents */
+        #toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        #toc h2 {
+            margin-top: 0 !important;
+            font-size: 1.4em !important;
+            border: none !important;
+        }
+
+        #toc ul {
+            list-style: none;
+            margin-left: 0 !important;
+        }
+
+        #toc li {
+            margin: 8px 0;
+        }
+
+        #toc a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        #toc a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Back to Main Page</a>
+
+    <div class="header">
+        <h1>📚 AI/ML Learning Notes</h1>
+        <p>Comprehensive guide from AI/ML class - November 2025</p>
+    </div>
+
+    <div class="content-container">
+        <div id="markdown-content" class="loading">Loading AI/ML notes</div>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#667eea',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#764ba2',
+                lineColor: '#764ba2',
+                secondaryColor: '#f093fb',
+                tertiaryColor: '#f8f9fa'
+            }
+        });
+
+        // Custom renderer to handle Mermaid diagrams
+        const renderer = {
+            code(code, language) {
+                if (language === 'mermaid') {
+                    return `<div class="mermaid">${code}</div>`;
+                }
+                return false; // Use default renderer
+            }
+        };
+
+        marked.use({ renderer });
+
+        // Fetch and render the markdown file
+        fetch('AI ML 20251101.md')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Could not load the markdown file');
+                }
+                return response.text();
+            })
+            .then(markdown => {
+                // Parse markdown to HTML
+                const html = marked.parse(markdown);
+
+                // Display the content
+                document.getElementById('markdown-content').innerHTML = html;
+
+                // Render Mermaid diagrams
+                mermaid.run({
+                    querySelector: '.mermaid'
+                });
+
+                // Highlight code blocks
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+
+                // Generate table of contents
+                generateTableOfContents();
+            })
+            .catch(error => {
+                document.getElementById('markdown-content').innerHTML =
+                    `<div style="color: #e74c3c; text-align: center; padding: 50px;">
+                        <h2>Error Loading Content</h2>
+                        <p>${error.message}</p>
+                        <p>Please make sure the file "AI ML 20251101.md" exists in the same directory.</p>
+                    </div>`;
+                console.error('Error loading markdown:', error);
+            });
+
+        // Generate table of contents from headings
+        function generateTableOfContents() {
+            const content = document.getElementById('markdown-content');
+            const headings = content.querySelectorAll('h1, h2, h3');
+
+            if (headings.length === 0) return;
+
+            const toc = document.createElement('div');
+            toc.id = 'toc';
+            toc.innerHTML = '<h2>📑 Table of Contents</h2><ul></ul>';
+
+            const tocList = toc.querySelector('ul');
+
+            headings.forEach((heading, index) => {
+                // Add ID to heading for linking
+                const id = `heading-${index}`;
+                heading.id = id;
+
+                // Create TOC entry
+                const li = document.createElement('li');
+                const level = parseInt(heading.tagName[1]);
+                li.style.marginLeft = `${(level - 1) * 20}px`;
+
+                const link = document.createElement('a');
+                link.href = `#${id}`;
+                link.textContent = heading.textContent;
+
+                li.appendChild(link);
+                tocList.appendChild(li);
+            });
+
+            // Insert TOC at the beginning of content
+            content.insertBefore(toc, content.firstChild);
+        }
+
+        // Smooth scrolling for TOC links
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && e.target.hash) {
+                const target = document.querySelector(e.target.hash);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Update URL without jumping
+                    history.pushState(null, null, e.target.hash);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
